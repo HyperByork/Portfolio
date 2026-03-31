@@ -1,78 +1,73 @@
-# 📊 Academic Coaching Dashboards
-**University of Missouri Learning Center**
+# Charles Brock — Data Portfolio
 
-A portfolio of interactive data dashboards visualizing student appointment trends and coaching evaluation outcomes across multiple semesters. Built with vanilla HTML, CSS, and JavaScript — no installation required.
+Graduate student at the University of Missouri.
+I work in academic program assessment, data visualization, and dashboard development.
 
----
-
-## 🔗 Live Dashboards
-
-| Dashboard | Description | Link |
-|---|---|---|
-| **Level II Academic Coaching** | Appointment trends & evaluation outcomes for Level II coaching | [View →](https://hyperbyork.github.io/Portfolio/LC_LevelII_Interactive.html) |
-| **All Coaching** | Program-wide appointment and evaluation overview | [View →](https://hyperbyork.github.io/Portfolio/LC_AC_All_Interactive.html) |
-
-> These links require GitHub Pages to be enabled. See setup instructions below.
+**Tools:** Python · pandas · HTML · CSS · JavaScript · Power BI · Excel
 
 ---
 
-## 📁 Repository Structure
+## Projects
 
+### Academic Coaching Dashboards
+**University of Missouri Learning Center · Fall 2023 – Fall 2025**
+
+Interactive dashboards exploring five semesters of academic coaching
+appointment data and student evaluation outcomes. Built in two formats —
+live web dashboards and a Power BI report — using fully synthetic data.
+
+---
+
+### HTML Dashboards
+
+Self-contained interactive dashboards built with vanilla HTML, CSS, and
+JavaScript. No installation required — open in any browser or view live.
+
+| Dashboard | Link |
+|-----------|------|
+| All Academic Coaching | [View live](https://hyperbyork.github.io/Portfolio/html/LC_AC_All_Interactive.html) |
+| Level II Academic Coaching | [View live](https://hyperbyork.github.io/Portfolio/html/LC_LevelII_Interactive.html) |
+
+See the [`html/`](html/) folder for source files and documentation.
+
+---
+
+### Power BI Dashboard
+
+A full three-page Power BI report covering the same dataset with a
+custom Mizzou-branded theme, DAX measures, and an interactive data model.
+
+Synthetic data files and screenshots are included so the report can be
+opened and explored locally.
+
+See the [`powerbi/`](powerbi/) folder for the report file, data, and documentation.
+
+---
+
+## Repository Structure
 ```
 Portfolio/
-│
-├── LC_AC_All_Interactive.html            # All Coaching program-wide dashboard
-├── LC_LevelII_Interactive.html           # Level II Academic Coaching dashboard
-├── data/
-│   └── sample-data.csv                  # Anonymized sample dataset
-├── screenshots/
-│   ├── level2-preview.png
-│   └── all-coaching-preview.png
+├── html/
+│   ├── LC_AC_All_Interactive.html    # Live dashboard — all AC programs
+│   ├── LC_LevelII_Interactive.html   # Live dashboard — Level II only
+│   └── README.md
+├── powerbi/
+│   ├── data/                         # Synthetic data files
+│   ├── screenshots/                  # Dashboard preview images
+│   └── README.md
 └── README.md
 ```
 
 ---
 
-## 📌 What These Dashboards Show
+## Data and Privacy
 
-Both dashboards draw from appointment and student evaluation data spanning **Fall 2023 through Fall 2025** at the MU Learning Center.
-
-### Appointment Volume & Trends
-- Semester-by-semester appointment counts
-- Delivery format breakdown (in-person vs. remote)
-- Referral source tracking across program cycles
-
-### Satisfaction Scores
-- Overall student satisfaction ratings across semesters
-- Trend lines to surface improvements or areas of concern
-
-### Helpfulness Ratings by Dimension
-- Disaggregated ratings across coaching dimensions (e.g., goal-setting, accountability, academic skills)
-- Semester comparisons to identify high-impact coaching areas
+All data in this repository is fully synthetic, generated with Python
+to match realistic distributions for a university academic coaching program.
+No real student or staff records are included.
 
 ---
 
-## 🛠️ How to Use
+## Contact
 
-**Option 1 — View online:** Click a Live Dashboard link above.
-
-**Option 2 — Run locally:**
-1. Clone or download this repository
-2. Open `LC_AC_All_Interactive.html` or `LC_LevelII_Interactive.html` in a modern web browser
-3. No server or installation needed
-
----
-
-## 🔒 Data & Privacy
-
-All data in this repository is **anonymized sample data** and does not contain any personally identifiable information. Student names, IDs, and email addresses have been removed or replaced prior to publication.
-
----
-
-## 🏫 About
-
-Built by the **MU Learning Center** to support program assessment and continuous improvement of academic coaching services.
-
----
-
-*Built with HTML · CSS · JavaScript · Mizzou Black & Gold*
+[LinkedIn](https://www.linkedin.com/in/charlesbrock3/) · charlesdbrock@missouri.edu
