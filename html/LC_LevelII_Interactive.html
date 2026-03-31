@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LC Academic Coaching: Level II</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold: #F1B82D;
+  --gold-dark: #C49520;
+  --gold-dim: rgba(241,184,45,0.15);
+  --black: #1C1A17;
+  --black-2: #2A2723;
+  --mid: #6B6860;
+  --light: #E8E4D8;
+  --bg: #F7F5EF;
+  --white: #FFFFFF;
+  --cancelled: #9A9590;
+  --noshow: #D4D0C6;
+  --shadow: 0 2px 12px rgba(28,26,23,0.07);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; }
+
+/* ── HEADER ── */
+.site-header { background: var(--black); padding: 0 32px; display: flex; align-items: stretch; border-bottom: 3px solid var(--gold); }
+.header-brand { padding: 18px 28px 18px 0; border-right: 1px solid rgba(255,255,255,0.08); margin-right: 28px; }
+.header-brand h1 { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--gold); line-height: 1.2; }
+.header-brand p { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 3px; letter-spacing: .04em; text-transform: uppercase; }
+.header-stats { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
+.hstat .n { font-size: 21px; font-weight: 600; color: var(--white); line-height: 1; }
+.hstat .l { font-size: 9px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: .05em; margin-top: 3px; }
+.hstat-div { width: 1px; height: 28px; background: rgba(255,255,255,0.1); }
+
+/* ── NAV ── */
+.sem-nav { background: var(--black-2); display: flex; gap: 2px; padding: 0 32px; }
+.sem-btn { padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.42); background: transparent; border: none; cursor: pointer; letter-spacing: .02em; transition: color .2s, background .2s; position: relative; white-space: nowrap; }
+.sem-btn:hover { color: rgba(255,255,255,0.75); }
+.sem-btn.active { color: var(--gold); background: rgba(241,184,45,0.07); }
+.sem-btn.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--gold); }
+
+/* ── MAIN ── */
+.main { padding: 22px 32px 32px; }
+
+/* ── KPI ROW ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-card { background: var(--white); border-radius: 10px; padding: 15px 17px; box-shadow: var(--shadow); border: 1px solid var(--light); border-top: 3px solid var(--gold); transition: transform .15s; }
+.kpi-card:hover { transform: translateY(-1px); }
+.kpi-card .lbl { font-size: 9px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+.kpi-card .val { font-size: 30px; font-weight: 600; color: var(--black); line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi-card .unit { font-size: 14px; font-weight: 300; color: var(--mid); margin-left: 2px; }
+.kpi-card .sub { font-size: 10.5px; color: var(--mid); margin-top: 5px; }
+
+/* ── GRIDS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-32 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+/* ── PANELS ── */
+.panel { background: var(--white); border-radius: 10px; padding: 18px 20px; box-shadow: var(--shadow); border: 1px solid var(--light); }
+.panel-title { font-size: 9.5px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+.panel-title::before { content:''; display:block; width:3px; height:11px; background:var(--gold); border-radius:2px; flex-shrink:0; }
+
+/* ── BAR ROWS ── */
+.bar-row { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+.bar-label { font-size: 11px; color: var(--black); min-width: 168px; flex-shrink: 0; }
+.bar-label.sm { min-width: 40px; font-size: 10.5px; }
+.bar-track { flex: 1; height: 8px; background: var(--light); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; background: var(--gold); transition: width .55s cubic-bezier(.4,0,.2,1); }
+.bar-num { font-size: 11px; font-weight: 500; color: var(--mid); min-width: 26px; text-align: right; }
+
+/* ── STACKED ── */
+.stack-label { font-size: 9.5px; color: var(--mid); margin-bottom: 3px; }
+.stack-row { display: flex; height: 11px; border-radius: 4px; overflow: hidden; gap: 1px; margin-bottom: 7px; }
+.seg { height: 100%; flex-shrink: 0; }
+
+/* ── OUTCOME BAR ── */
+.outcome-bar { height: 18px; border-radius: 6px; overflow: hidden; display: flex; gap: 2px; margin-bottom: 12px; }
+.out-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 9.5px; font-weight: 600; transition: flex .5s cubic-bezier(.4,0,.2,1); }
+
+/* ── LEGEND ── */
+.legend-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.legend-left { display: flex; align-items: center; gap: 7px; }
+.legend-swatch { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.legend-name { font-size: 11.5px; color: var(--mid); }
+.legend-pct { font-size: 12px; font-weight: 600; color: var(--black); }
+
+.legend-strip { display: flex; gap: 14px; font-size: 9.5px; color: var(--mid); margin-bottom: 10px; }
+.legend-strip .li { display: flex; align-items: center; gap: 4px; }
+.legend-strip .lsw { width: 7px; height: 7px; border-radius: 2px; }
+
+/* ── VISIT CELLS ── */
+.visit-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 16px; }
+.visit-cell { background: var(--bg); border-radius: 8px; padding: 11px 12px; text-align: center; border: 1px solid var(--light); }
+.visit-cell.gold { border-color: var(--gold); background: var(--gold-dim); }
+.visit-cell .vn { font-size: 24px; font-weight: 600; color: var(--black); line-height: 1; }
+.visit-cell.gold .vn { color: var(--gold-dark); }
+.visit-cell .vl { font-size: 9.5px; color: var(--mid); text-transform: uppercase; letter-spacing: .04em; margin-top: 4px; }
+
+/* ── DATA NOTE ── */
+.data-note { font-size: 10px; color: var(--mid); background: var(--bg); border-left: 3px solid var(--light); padding: 7px 10px; border-radius: 0 5px 5px 0; margin-top: 12px; line-height: 1.5; }
+
+.divider { height: 1px; background: var(--light); margin: 12px 0; }
+.chart-wrap { position: relative; }
+
+/* ── FOOTER ── */
+.footer { padding: 11px 32px; font-size: 10px; color: var(--mid); border-top: 1px solid var(--light); background: var(--white); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-brand">
+    <h1>Academic Coaching: Level II</h1>
+    <p>University of Missouri · Learning Center · F23–F25</p>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="n">370</div><div class="l">Sessions Attended</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="n">554</div><div class="l">Total Scheduled</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="n">5</div><div class="l">Semesters</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="n">66.8%</div><div class="l">Avg Attend Rate</div></div>
+  </div>
+</header>
+
+<nav class="sem-nav">
+  <button class="sem-btn active" onclick="setSem('all')">All Semesters</button>
+  <button class="sem-btn" onclick="setSem('F23')">Fall 2023</button>
+  <button class="sem-btn" onclick="setSem('S24')">Spring 2024</button>
+  <button class="sem-btn" onclick="setSem('F24')">Fall 2024</button>
+  <button class="sem-btn" onclick="setSem('S25')">Spring 2025</button>
+  <button class="sem-btn" onclick="setSem('F25')">Fall 2025</button>
+</nav>
+
+<main class="main">
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="lbl">Sessions Attended</div><div class="val" id="kpi-att">370</div><div class="sub" id="kpi-att-sub">across all 5 semesters</div></div>
+    <div class="kpi-card"><div class="lbl">Attendance Rate</div><div class="val" id="kpi-rate">66.8<span class="unit">%</span></div><div class="sub" id="kpi-rate-sub">of all scheduled sessions</div></div>
+    <div class="kpi-card"><div class="lbl">Unique Students</div><div class="val" id="kpi-students">241</div><div class="sub" id="kpi-students-sub">across all semesters</div></div>
+    <div class="kpi-card"><div class="lbl">Avg Visits / Student</div><div class="val" id="kpi-avg">1.54<span class="unit">×</span></div><div class="sub" id="kpi-avg-sub">per semester average</div></div>
+  </div>
+
+  <!-- Chart + Outcomes -->
+  <div class="grid-32">
+    <div class="panel">
+      <div class="panel-title" id="chart-label">Attended Sessions &amp; Attendance Rate — All Semesters</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="mainChart"></canvas></div>
+      <div style="display:flex;gap:16px;font-size:10px;color:var(--mid);margin-top:8px">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;background:var(--gold);border-radius:2px;display:inline-block"></span>Sessions attended</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:18px;height:2px;background:var(--black-2);display:inline-block"></span>Attendance rate %</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Session Outcomes</div>
+      <div class="outcome-bar" id="outcome-bar">
+        <div class="out-seg" id="out-att" style="background:var(--gold);flex:66.8;color:rgba(0,0,0,0.55)">66.8%</div>
+        <div class="out-seg" id="out-can" style="background:var(--cancelled);flex:22.6;color:rgba(255,255,255,0.85)">22.6%</div>
+        <div class="out-seg" id="out-nos" style="background:var(--noshow);flex:10.6"></div>
+      </div>
+      <div class="legend-row"><div class="legend-left"><div class="legend-swatch" style="background:var(--gold)"></div><span class="legend-name">Attended</span></div><span class="legend-pct" id="leg-att-pct">66.8%</span></div>
+      <div class="legend-row"><div class="legend-left"><div class="legend-swatch" style="background:var(--cancelled)"></div><span class="legend-name">Cancelled</span></div><span class="legend-pct" id="leg-can-pct">22.6%</span></div>
+      <div class="legend-row"><div class="legend-left"><div class="legend-swatch" style="background:var(--noshow)"></div><span class="legend-name">No show</span></div><span class="legend-pct" id="leg-nos-pct">10.6%</span></div>
+
+      <div class="divider"></div>
+      <div class="panel-title" style="margin-bottom:10px">Top Topics — Outcome Breakdown</div>
+      <div class="legend-strip">
+        <span class="li"><span class="lsw" style="background:var(--gold)"></span>Attended</span>
+        <span class="li"><span class="lsw" style="background:var(--cancelled)"></span>Cancelled</span>
+        <span class="li"><span class="lsw" style="background:var(--noshow)"></span>No show</span>
+      </div>
+      <div id="topic-stacks"></div>
+    </div>
+  </div>
+
+  <!-- Topics + Repeat visits -->
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Coaching Topics — Attended Sessions</div>
+      <div id="topics-bars"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Student Engagement</div>
+      <div class="visit-grid" id="visit-grid">
+        <div class="visit-cell gold"><div class="vn" id="v-unique">241</div><div class="vl">Unique students</div></div>
+        <div class="visit-cell gold"><div class="vn" id="v-avg">1.54×</div><div class="vl">Avg visits</div></div>
+        <div class="visit-cell gold"><div class="vn" id="v-repeat">—</div><div class="vl">Returned 2+</div></div>
+      </div>
+      <div class="panel-title" style="margin-bottom:10px">Visit Frequency (F25 detail)</div>
+      <div class="bar-row"><div class="bar-label">1 visit</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-num">54 students</div></div>
+      <div class="bar-row"><div class="bar-label">2 visits</div><div class="bar-track"><div class="bar-fill" style="width:7.4%"></div></div><div class="bar-num">4 students</div></div>
+      <div class="bar-row"><div class="bar-label">10 visits</div><div class="bar-track"><div class="bar-fill" style="width:1.9%"></div></div><div class="bar-num">1 student</div></div>
+
+      <div class="divider"></div>
+      <div class="panel-title" style="margin-bottom:10px">College Breakdown — Matched Records</div>
+      <div class="bar-row"><div class="bar-label">Health Sciences</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-num">7</div></div>
+      <div class="bar-row"><div class="bar-label">Arts &amp; Science</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-num">7</div></div>
+      <div class="bar-row"><div class="bar-label">Ag, Food &amp; Nat. Resources</div><div class="bar-track"><div class="bar-fill" style="width:71.4%"></div></div><div class="bar-num">5</div></div>
+      <div class="bar-row"><div class="bar-label">Engineering</div><div class="bar-track"><div class="bar-fill" style="width:71.4%"></div></div><div class="bar-num">5</div></div>
+      <div class="bar-row"><div class="bar-label">Education &amp; Human Dev.</div><div class="bar-track"><div class="bar-fill" style="width:42.9%"></div></div><div class="bar-num">3</div></div>
+      <div class="bar-row"><div class="bar-label">Journalism</div><div class="bar-track"><div class="bar-fill" style="width:14.3%"></div></div><div class="bar-num">1</div></div>
+      <div class="data-note">College data matched for 28 of 370 attended sessions (7.6%). The student roster file covers a subset of students — results are directional only.</div>
+    </div>
+  </div>
+
+  <!-- ── EVALUATIONS SECTION ── -->
+  <div style="display:flex;align-items:center;gap:12px;margin:8px 0 14px">
+    <div style="flex:1;height:1px;background:var(--light)"></div>
+    <div style="font-size:10px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;padding:0 4px">Student Evaluations — S25 &amp; F25 (n=138 total · 30 matched to Level II)</div>
+    <div style="flex:1;height:1px;background:var(--light)"></div>
+  </div>
+
+  <!-- Eval KPIs -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
+    <div class="kpi-card" style="border-top-color:#C49520">
+      <div class="lbl">Overall Satisfaction</div>
+      <div class="val">87.7<span class="unit">%</span></div>
+      <div class="sub">Extremely satisfied</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:#C49520">
+      <div class="lbl">Avg Rating Score</div>
+      <div class="val">4.40<span class="unit">/5</span></div>
+      <div class="sub">across all 6 dimensions</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:#C49520">
+      <div class="lbl">Would Recommend</div>
+      <div class="val">94.9<span class="unit">%</span></div>
+      <div class="sub">129 of 136 respondents</div>
+    </div>
+    <div class="kpi-card" style="border-top-color:#C49520">
+      <div class="lbl">Total Responses</div>
+      <div class="val">138</div>
+      <div class="sub">S25: 107 &nbsp;·&nbsp; F25: 31</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <!-- Satisfaction breakdown -->
+    <div class="panel">
+      <div class="panel-title">Satisfaction by Semester</div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:10px;font-weight:600;color:var(--mid);margin-bottom:6px">Fall 2025 &nbsp;<span style="font-weight:400;color:var(--mid)">(n=31)</span></div>
+        <div class="bar-row" style="margin-bottom:5px">
+          <div class="bar-label" style="min-width:130px;font-size:10.5px">Extremely satisfied</div>
+          <div class="bar-track"><div class="bar-fill" style="width:90.3%"></div></div>
+          <div class="bar-num">90.3%</div>
+        </div>
+        <div class="bar-row" style="margin-bottom:5px">
+          <div class="bar-label" style="min-width:130px;font-size:10.5px">Somewhat satisfied</div>
+          <div class="bar-track"><div class="bar-fill" style="width:6.5%;background:#C8C3B5"></div></div>
+          <div class="bar-num">6.5%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:10.5px">Other</div>
+          <div class="bar-track"><div class="bar-fill" style="width:3.2%;background:#E0DDD4"></div></div>
+          <div class="bar-num">3.2%</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:10px;font-weight:600;color:var(--mid);margin-bottom:6px">Spring 2025 &nbsp;<span style="font-weight:400;color:var(--mid)">(n=107)</span></div>
+      <div class="bar-row" style="margin-bottom:5px">
+        <div class="bar-label" style="min-width:130px;font-size:10.5px">Extremely satisfied</div>
+        <div class="bar-track"><div class="bar-fill" style="width:86.9%"></div></div>
+        <div class="bar-num">86.9%</div>
+      </div>
+      <div class="bar-row" style="margin-bottom:5px">
+        <div class="bar-label" style="min-width:130px;font-size:10.5px">Somewhat satisfied</div>
+        <div class="bar-track"><div class="bar-fill" style="width:6.5%;background:#C8C3B5"></div></div>
+        <div class="bar-num">6.5%</div>
+      </div>
+      <div class="bar-row" style="margin-bottom:5px">
+        <div class="bar-label" style="min-width:130px;font-size:10.5px">Neutral</div>
+        <div class="bar-track"><div class="bar-fill" style="width:3.7%;background:#D4D0C6"></div></div>
+        <div class="bar-num">3.7%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label" style="min-width:130px;font-size:10.5px">Dissatisfied</div>
+        <div class="bar-track"><div class="bar-fill" style="width:2.8%;background:#9A9590"></div></div>
+        <div class="bar-num">2.8%</div>
+      </div>
+    </div>
+
+    <!-- Per-dimension ratings -->
+    <div class="panel">
+      <div class="panel-title">Rating by Dimension — All Evals</div>
+      <div style="font-size:9.5px;color:var(--mid);margin-bottom:10px">Avg score out of 5 (Extremely Helpful = 5)</div>
+
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+        <div style="font-size:10.5px;color:var(--black);flex:1">Time management tips</div>
+        <div style="display:flex;gap:2px;align-items:center">
+          <div style="width:90px;height:7px;background:var(--light);border-radius:3px;overflow:hidden"><div style="width:93%;height:100%;background:var(--gold);border-radius:3px"></div></div>
+          <span style="font-size:10.5px;font-weight:600;color:var(--black);margin-left:5px;min-width:28px">4.65</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+        <div style="font-size:10.5px;color:var(--black);flex:1">Learn more effectively</div>
+        <div style="display:flex;gap:2px;align-items:center">
+          <div style="width:90px;height:7px;background:var(--light);border-radius:3px;overflow:hidden"><div style="width:91%;height:100%;background:var(--gold);border-radius:3px"></div></div>
+          <span style="font-size:10.5px;font-weight:600;color:var(--black);margin-left:5px;min-width:28px">4.55</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+        <div style="font-size:10.5px;color:var(--black);flex:1">Exam preparation</div>
+        <div style="display:flex;gap:2px;align-items:center">
+          <div style="width:90px;height:7px;background:var(--light);border-radius:3px;overflow:hidden"><div style="width:89%;height:100%;background:var(--gold);border-radius:3px"></div></div>
+          <span style="font-size:10.5px;font-weight:600;color:var(--black);margin-left:5px;min-width:28px">4.45</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+        <div style="font-size:10.5px;color:var(--black);flex:1">Study tips &amp; plan</div>
+        <div style="display:flex;gap:2px;align-items:center">
+          <div style="width:90px;height:7px;background:var(--light);border-radius:3px;overflow:hidden"><div style="width:89.6%;height:100%;background:var(--gold);border-radius:3px"></div></div>
+          <span style="font-size:10.5px;font-weight:600;color:var(--black);margin-left:5px;min-width:28px">4.48</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+        <div style="font-size:10.5px;color:var(--black);flex:1">Feel more confident</div>
+        <div style="display:flex;gap:2px;align-items:center">
+          <div style="width:90px;height:7px;background:var(--light);border-radius:3px;overflow:hidden"><div style="width:85.8%;height:100%;background:var(--gold);border-radius:3px"></div></div>
+          <span style="font-size:10.5px;font-weight:600;color:var(--black);margin-left:5px;min-width:28px">4.29</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="font-size:10.5px;color:var(--black);flex:1">Peer support / relatability</div>
+        <div style="display:flex;gap:2px;align-items:center">
+          <div style="width:90px;height:7px;background:var(--light);border-radius:3px;overflow:hidden"><div style="width:81.4%;height:100%;background:#C49520;border-radius:3px"></div></div>
+          <span style="font-size:10.5px;font-weight:600;color:var(--black);margin-left:5px;min-width:28px">4.07</span>
+        </div>
+      </div>
+      <div class="data-note" style="margin-top:12px">Peer support scored lowest — still strong at 4.07, but worth watching as a distinct coaching differentiator.</div>
+    </div>
+
+    <!-- Student background -->
+    <div class="panel">
+      <div class="panel-title">Who Is Completing Evals?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:9.5px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px">Class level</div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:72px;font-size:10px">Freshman</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-num" style="font-size:10px">51</div></div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:72px;font-size:10px">Sophomore</div><div class="bar-track"><div class="bar-fill" style="width:64.7%"></div></div><div class="bar-num" style="font-size:10px">33</div></div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:72px;font-size:10px">Junior</div><div class="bar-track"><div class="bar-fill" style="width:49%"></div></div><div class="bar-num" style="font-size:10px">25</div></div>
+          <div class="bar-row"><div class="bar-label" style="min-width:72px;font-size:10px">Senior</div><div class="bar-track"><div class="bar-fill" style="width:43.1%"></div></div><div class="bar-num" style="font-size:10px">22</div></div>
+        </div>
+        <div>
+          <div style="font-size:9.5px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px">Current GPA</div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:66px;font-size:10px">First Sem</div><div class="bar-track"><div class="bar-fill" style="width:55.9%"></div></div><div class="bar-num" style="font-size:10px">19</div></div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:66px;font-size:10px">&lt; 2.0</div><div class="bar-track"><div class="bar-fill" style="width:64.7%"></div></div><div class="bar-num" style="font-size:10px">22</div></div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:66px;font-size:10px">2.0–2.49</div><div class="bar-track"><div class="bar-fill" style="width:85.3%"></div></div><div class="bar-num" style="font-size:10px">29</div></div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:66px;font-size:10px">2.5–2.99</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-num" style="font-size:10px">34</div></div>
+          <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:66px;font-size:10px">3.0–3.49</div><div class="bar-track"><div class="bar-fill" style="width:67.6%"></div></div><div class="bar-num" style="font-size:10px">23</div></div>
+          <div class="bar-row"><div class="bar-label" style="min-width:66px;font-size:10px">3.5–4.0</div><div class="bar-track"><div class="bar-fill" style="width:32.4%"></div></div><div class="bar-num" style="font-size:10px">11</div></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:9.5px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px">How they heard about the program</div>
+      <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:130px;font-size:10px">Class / Instructor</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-num" style="font-size:10px">49</div></div>
+      <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:130px;font-size:10px">Academic Advisor</div><div class="bar-track"><div class="bar-fill" style="width:81.6%"></div></div><div class="bar-num" style="font-size:10px">40</div></div>
+      <div class="bar-row" style="margin-bottom:4px"><div class="bar-label" style="min-width:130px;font-size:10px">Both (Advisor + Class)</div><div class="bar-track"><div class="bar-fill" style="width:22.4%"></div></div><div class="bar-num" style="font-size:10px">11</div></div>
+      <div class="bar-row"><div class="bar-label" style="min-width:130px;font-size:10px">Other / Walk-in</div><div class="bar-track"><div class="bar-fill" style="width:18.4%"></div></div><div class="bar-num" style="font-size:10px">9</div></div>
+      <div class="data-note">Evaluation data covers all AC appointments (S25 + F25). 30 of 138 respondents matched to Level II students specifically.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  Sources: Copy_of_TotalContacts.csv · df_with_college.csv · Academic_Coaching_Evals_SP25.xlsx · Academic_Coaching_Evals_FS25.xlsx &nbsp;·&nbsp; No student-identifying data displayed &nbsp;·&nbsp; University of Missouri Learning Center
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const DATA = {
+  all: {
+    att:370, total:554, can:125, nos:59,
+    students:241, avgVisits:1.54, repeat:'—',
+    semLabels:['F23','S24','F24','S25','F25'],
+    semAtt:[24,94,106,74,72],
+    semRates:[85.7,77.7,61.3,58.7,67.9],
+    topics:[
+      {name:'Building good study habits',n:164},
+      {name:'Time management',n:57},
+      {name:'Overcoming procrastination',n:46},
+      {name:'Other / custom',n:36},
+      {name:'Test prep / test anxiety',n:23},
+      {name:'First appointment',n:13},
+      {name:'Note-taking & focus',n:12},
+      {name:'How to use technology',n:10},
+      {name:'Campus resources',n:7},
+    ],
+    stacks:[
+      {name:'Study habits',a:164,c:51,n:14},
+      {name:'Time management',a:57,c:20,n:8},
+      {name:'Procrastination',a:46,c:17,n:9},
+      {name:'Test prep',a:23,c:7,n:5},
+    ],
+  },
+  F23: {
+    att:24, total:28, can:2, nos:2,
+    students:17, avgVisits:1.41, repeat:'6 (35%)',
+    semLabels:['F23'], semAtt:[24], semRates:[85.7],
+    topics:[
+      {name:'Building good study habits',n:20},
+      {name:'Overcoming procrastination',n:2},
+      {name:'Time management',n:1},
+      {name:'How to use technology',n:1},
+    ],
+    stacks:[
+      {name:'Study habits',a:20,c:0,n:1},
+      {name:'Procrastination',a:2,c:0,n:0},
+    ],
+  },
+  S24: {
+    att:94, total:121, can:23, nos:4,
+    students:61, avgVisits:1.54, repeat:'12 (20%)',
+    semLabels:['S24'], semAtt:[94], semRates:[77.7],
+    topics:[
+      {name:'Building good study habits',n:42},
+      {name:'Time management',n:17},
+      {name:'Overcoming procrastination',n:12},
+      {name:'Other / custom',n:9},
+      {name:'Test prep / test anxiety',n:8},
+      {name:'Note-taking & focus',n:3},
+      {name:'How to use technology',n:3},
+    ],
+    stacks:[
+      {name:'Study habits',a:42,c:13,n:2},
+      {name:'Time management',a:17,c:1,n:0},
+      {name:'Procrastination',a:12,c:4,n:1},
+      {name:'Test prep',a:8,c:2,n:1},
+    ],
+  },
+  F24: {
+    att:106, total:173, can:46, nos:21,
+    students:59, avgVisits:1.80, repeat:'17 (29%)',
+    semLabels:['F24'], semAtt:[106], semRates:[61.3],
+    topics:[
+      {name:'Building good study habits',n:43},
+      {name:'Time management',n:16},
+      {name:'Other / custom',n:15},
+      {name:'Overcoming procrastination',n:12},
+      {name:'Campus resources',n:6},
+      {name:'Test prep / test anxiety',n:5},
+      {name:'Note-taking & focus',n:4},
+    ],
+    stacks:[
+      {name:'Study habits',a:43,c:13,n:5},
+      {name:'Time management',a:16,c:13,n:5},
+      {name:'Procrastination',a:12,c:7,n:5},
+      {name:'Test prep',a:5,c:2,n:0},
+    ],
+  },
+  S25: {
+    att:74, total:126, can:40, nos:12,
+    students:45, avgVisits:1.64, repeat:'6 (13%)',
+    semLabels:['S25'], semAtt:[74], semRates:[58.7],
+    topics:[
+      {name:'Building good study habits',n:40},
+      {name:'Time management',n:11},
+      {name:'Overcoming procrastination',n:7},
+      {name:'Test prep / test anxiety',n:6},
+      {name:'First appointment',n:5},
+      {name:'Note-taking & focus',n:3},
+      {name:'Other / custom',n:2},
+    ],
+    stacks:[
+      {name:'Study habits',a:40,c:18,n:3},
+      {name:'Procrastination',a:7,c:7,n:2},
+      {name:'Time management',a:11,c:3,n:2},
+      {name:'Test prep',a:6,c:1,n:2},
+    ],
+  },
+  F25: {
+    att:72, total:106, can:22, nos:12,
+    students:59, avgVisits:1.22, repeat:'5 (8.5%)',
+    semLabels:['F25'], semAtt:[72], semRates:[67.9],
+    topics:[
+      {name:'Building good study habits',n:19},
+      {name:'Overcoming procrastination',n:13},
+      {name:'Time management',n:12},
+      {name:'Other / custom',n:10},
+      {name:'First appointment',n:8},
+      {name:'Test prep / test anxiety',n:4},
+      {name:'Note-taking & focus',n:2},
+    ],
+    stacks:[
+      {name:'Study habits',a:19,c:7,n:4},
+      {name:'Procrastination',a:13,c:3,n:3},
+      {name:'Time management',a:12,c:2,n:3},
+      {name:'Test prep',a:4,c:1,n:1},
+    ],
+  },
+};
+
+let chart = null;
+
+function buildChart(d) {
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  if (chart) chart.destroy();
+  chart = new Chart(ctx, {
+    data: {
+      labels: d.semLabels,
+      datasets: [
+        { type:'bar', label:'Sessions attended', data:d.semAtt, backgroundColor:'#F1B82D', borderRadius:5, yAxisID:'y', order:2 },
+        { type:'line', label:'Attendance rate %', data:d.semRates, borderColor:'#1C1A17', backgroundColor:'rgba(28,26,23,0.07)', borderWidth:2.5, pointBackgroundColor:'#1C1A17', pointRadius:5, pointHoverRadius:7, tension:0.3, fill:false, yAxisID:'y2', order:1 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label: c => c.dataset.label==='Attendance rate %' ? ` ${c.parsed.y}% attendance rate` : ` ${c.parsed.y} sessions attended` }}},
+      scales:{
+        x:{ grid:{ display:false }, ticks:{ font:{ family:"'DM Sans',sans-serif", size:11 }, color:'#6B6860' }},
+        y:{ position:'left', grid:{ color:'#E8E4D8' }, ticks:{ font:{ family:"'DM Sans',sans-serif", size:10 }, color:'#6B6860' }, title:{ display:true, text:'Sessions attended', font:{ size:10 }, color:'#6B6860' }},
+        y2:{ position:'right', min:0, max:100, grid:{ drawOnChartArea:false }, ticks:{ font:{ family:"'DM Sans',sans-serif", size:10 }, color:'#6B6860', callback: v=>v+'%' }, title:{ display:true, text:'Attendance rate', font:{ size:10 }, color:'#6B6860' }}
+      }
+    }
+  });
+}
+
+function render(sem) {
+  const d = DATA[sem];
+  const att=d.att, tot=d.total, can=d.can, nos=d.nos;
+  const attP=(att/tot*100).toFixed(1), canP=(can/tot*100).toFixed(1), nosP=(nos/tot*100).toFixed(1);
+
+  // KPIs
+  document.getElementById('kpi-att').textContent = att;
+  document.getElementById('kpi-att-sub').textContent = sem==='all' ? 'across all 5 semesters' : d.semLabels[0].replace('F','Fall 20').replace('S','Spring 20');
+  document.getElementById('kpi-rate').innerHTML = attP + '<span class="unit">%</span>';
+  document.getElementById('kpi-rate-sub').textContent = `${can} cancelled · ${nos} no-show`;
+  document.getElementById('kpi-students').textContent = d.students;
+  document.getElementById('kpi-students-sub').textContent = sem==='all' ? 'across all semesters (may overlap)' : 'unique students this semester';
+  document.getElementById('kpi-avg').innerHTML = d.avgVisits + '<span class="unit">×</span>';
+  document.getElementById('kpi-avg-sub').textContent = 'avg attended sessions / student';
+
+  // Outcome bar
+  document.getElementById('out-att').style.flex = attP;
+  document.getElementById('out-att').textContent = attP + '%';
+  document.getElementById('out-can').style.flex = canP;
+  document.getElementById('out-can').textContent = canP > 8 ? canP + '%' : '';
+  document.getElementById('out-nos').style.flex = nosP;
+  document.getElementById('leg-att-pct').textContent = attP + '%';
+  document.getElementById('leg-can-pct').textContent = canP + '%';
+  document.getElementById('leg-nos-pct').textContent = nosP + '%';
+
+  // Chart
+  document.getElementById('chart-label').innerHTML = sem==='all'
+    ? 'Attended Sessions &amp; Attendance Rate — All Semesters'
+    : `Attended Sessions &amp; Attendance Rate — ${d.semLabels[0].replace('F','Fall 20').replace('S','Spring 20')}`;
+  buildChart(d);
+
+  // Topics
+  const maxN = Math.max(...d.topics.map(t=>t.n));
+  document.getElementById('topics-bars').innerHTML = d.topics.map(t=>`
+    <div class="bar-row">
+      <div class="bar-label">${t.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(t.n/maxN*100).toFixed(1)}%"></div></div>
+      <div class="bar-num">${t.n}</div>
+    </div>`).join('');
+
+  // Stacks
+  document.getElementById('topic-stacks').innerHTML = d.stacks.map(t => {
+    const tot = t.a+t.c+t.n;
+    return `<div class="stack-label">${t.name} (${tot} total)</div>
+    <div class="stack-row">
+      <div class="seg" style="flex:${t.a};background:#F1B82D"></div>
+      ${t.c>0?`<div class="seg" style="flex:${t.c};background:#9A9590"></div>`:''}
+      ${t.n>0?`<div class="seg" style="flex:${t.n};background:#D4D0C6"></div>`:''}
+    </div>`;
+  }).join('');
+
+  // Engagement
+  document.getElementById('v-unique').textContent = d.students;
+  document.getElementById('v-avg').textContent = d.avgVisits + '×';
+  document.getElementById('v-repeat').textContent = d.repeat;
+}
+
+function setSem(sem) {
+  document.querySelectorAll('.sem-btn').forEach((b,i)=>{
+    b.classList.toggle('active', ['all','F23','S24','F24','S25','F25'][i]===sem);
+  });
+  render(sem);
+}
+
+render('all');
+</script>
+</body>
+</html>
